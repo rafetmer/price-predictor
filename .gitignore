@@ -1,0 +1,43 @@
+# Bağımlılıklar ve Derlenmiş Dosyalar
+/node_modules
+/dist
+/build
+
+# Log Dosyaları
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Çalışma Zamanı Verileri
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Test Raporları
+/coverage
+/.nyc_output
+
+# İşletim Sistemi ve Editör Dosyaları
+.DS_Store
+.idea/
+*.sublime-workspace
+
+# VSCode Editör Ayarları (Paylaşılması gerekenler hariç)
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# Ortam Değişkenleri Dosyaları
+.env
+.env.*
+!.env.example
+
+# Node.js Hata Raporları
+report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
