@@ -5,16 +5,16 @@ import { Symbol } from '../../domain/value-objects/symbol.value-object';
 
 @Controller('prices')
 export class PricesController {
-  constructor(
-    @Inject('PriceHistoryRepository')
-    private readonly priceHistoryRepository: PriceHistoryRepository,
-  ) {}
+	constructor(
+		@Inject('PriceHistoryRepository')
+		private readonly priceHistoryRepository: PriceHistoryRepository,
+	) {}
 
-  @Get(':symbol')
-  async getPricesBySymbol(
-    @Param('symbol') symbol: string,
-  ): Promise<PriceHistory[]> {
-    const symbolVO = new Symbol(symbol);
-    return this.priceHistoryRepository.findBySymbol(symbolVO);
-  }
+	@Get(':symbol')
+	async getPricesBySymbol(
+		@Param('symbol') symbol: string,
+	): Promise<PriceHistory[]> {
+		const symbolVO = new Symbol(symbol);
+		return this.priceHistoryRepository.findBySymbol(symbolVO);
+	}
 }

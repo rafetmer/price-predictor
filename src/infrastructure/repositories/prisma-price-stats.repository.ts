@@ -8,78 +8,78 @@ import { Trend } from '../../domain/value-objects/trend.value-object';
 
 @Injectable()
 export class PrismaPriceStatsRepository implements PriceStatsRepository {
-  constructor(private readonly prisma: PrismaClient) {}
+	constructor(private readonly prisma: PrismaClient) {}
 
-  async save(priceStats: PriceStats): Promise<PriceStats> {
-    const created = await this.prisma.priceStats.create({
-      data: {
-        symbol: priceStats.getSymbol().getValue(),
-        period: priceStats.getPeriod().getValue(),
-        avg: priceStats.getAvg(),
-        volatility: priceStats.getVolatility(),
-        trend: priceStats.getTrend().getValue(),
-        calculatedAt: priceStats.getCalculatedAt(),
-      },
-    });
-    return new PriceStats(
-      new Symbol(created.symbol),
-      new Period(created.period),
-      created.avg,
-      created.volatility,
-      new Trend(created.trend),
-      created.calculatedAt,
-      created.id,
-    );
-  }
+	async save(priceStats: PriceStats): Promise<PriceStats> {
+		const created = await this.prisma.priceStats.create({
+			data: {
+				symbol: priceStats.getSymbol().getValue(),
+				period: priceStats.getPeriod().getValue(),
+				avg: priceStats.getAvg(),
+				volatility: priceStats.getVolatility(),
+				trend: priceStats.getTrend().getValue(),
+				calculatedAt: priceStats.getCalculatedAt(),
+			},
+		});
+		return new PriceStats(
+			new Symbol(created.symbol),
+			new Period(created.period),
+			created.avg,
+			created.volatility,
+			new Trend(created.trend),
+			created.calculatedAt,
+			created.id,
+		);
+	}
 
-  async findLatestBySymbolAndPeriod(
-    symbol: Symbol,
-    period: Period,
-  ): Promise<PriceStats | null> {
-    const found = await this.prisma.priceStats.findFirst({
-      where: {
-        symbol: symbol.getValue(),
-        period: period.getValue(),
-      },
-      orderBy: { calculatedAt: 'desc' },
-    });
+	async findLatestBySymbolAndPeriod(
+		symbol: Symbol,
+		period: Period,
+	): Promise<PriceStats | null> {
+		const found = await this.prisma.priceStats.findFirst({
+			where: {
+				symbol: symbol.getValue(),
+				period: period.getValue(),
+			},
+			orderBy: { calculatedAt: 'desc' },
+		});
 
-    if (!found) return null;
+		if (!found) return null;
 
-    return new PriceStats(
-      new Symbol(found.symbol),
-      new Period(found.period),
-      found.avg,
-      found.volatility,
-      new Trend(found.trend),
-      found.calculatedAt,
-      found.id,
-    );
-  }
+		return new PriceStats(
+			new Symbol(found.symbol),
+			new Period(found.period),
+			found.avg,
+			found.volatility,
+			new Trend(found.trend),
+			found.calculatedAt,
+			found.id,
+		);
+	}
 
-  async findBySymbolAndPeriod(
-    symbol: Symbol,
-    period: Period,
-  ): Promise<PriceStats[]> {
-    const found = await this.prisma.priceStats.findMany({
-      where: {
-        symbol: symbol.getValue(),
-        period: period.getValue(),
-      },
-      orderBy: { calculatedAt: 'desc' },
-    });
+	async findBySymbolAndPeriod(
+		symbol: Symbol,
+		period: Period,
+	): Promise<PriceStats[]> {
+		const found = await this.prisma.priceStats.findMany({
+			where: {
+				symbol: symbol.getValue(),
+				period: period.getValue(),
+			},
+			orderBy: { calculatedAt: 'desc' },
+		});
 
-    return found.map(
-      (record) =>
-        new PriceStats(
-          new Symbol(record.symbol),
-          new Period(record.period),
-          record.avg,
-          record.volatility,
-          new Trend(record.trend),
-          record.calculatedAt,
-          record.id,
-        ),
-    );
-  }
+		return found.map(
+			(record) =>
+				new PriceStats(
+					new Symbol(record.symbol),
+					new Period(record.period),
+					record.avg,
+					record.volatility,
+					new Trend(record.trend),
+					record.calculatedAt,
+					record.id,
+				),
+		);
+	}
 }

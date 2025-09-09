@@ -7,36 +7,36 @@ import { Period } from '../../domain/value-objects/period.value-object';
 
 @Controller('stats')
 export class StatsController {
-  constructor(
-    @Inject('PriceStatsRepository')
-    private readonly priceStatsRepository: PriceStatsRepository,
-    private readonly calculateStatsUseCase: CalculateStatsUseCase,
-  ) {}
+	constructor(
+		@Inject('PriceStatsRepository')
+		private readonly priceStatsRepository: PriceStatsRepository,
+		private readonly calculateStatsUseCase: CalculateStatsUseCase,
+	) {}
 
-  @Get(':symbol/:period')
-  async getStats(
-    @Param('symbol') symbol: string,
-    @Param('period') period: string,
-  ): Promise<PriceStats> {
-    // Önce en son hesaplanmış istatistiği bulmaya çalış
-    const latestStat =
-      await this.priceStatsRepository.findLatestBySymbolAndPeriod(
-        new Symbol(symbol),
-        new Period(period),
-      );
+	@Get(':symbol/:period')
+	async getStats(
+		@Param('symbol') symbol: string,
+		@Param('period') period: string,
+	): Promise<PriceStats> {
+		// Önce en son hesaplanmış istatistiği bulmaya çalış
+		const latestStat =
+			await this.priceStatsRepository.findLatestBySymbolAndPeriod(
+				new Symbol(symbol),
+				new Period(period),
+			);
 
-    // Eğer varsa ve çok eski değilse onu döndür (örneğin son 1 saat içinde hesaplanmışsa)
-    if (latestStat && this.isStatRecent(latestStat.getCalculatedAt())) {
-      return latestStat;
-    }
+		// Eğer varsa ve çok eski değilse onu döndür (örneğin son 1 saat içinde hesaplanmışsa)
+		if (latestStat && this.isStatRecent(latestStat.getCalculatedAt())) {
+			return latestStat;
+		}
 
-    // Yoksa veya eskiyse, yeniden hesapla
-    return this.calculateStatsUseCase.execute(symbol, period);
-  }
+		// Yoksa veya eskiyse, yeniden hesapla
+		return this.calculateStatsUseCase.execute(symbol, period);
+	}
 
-  private isStatRecent(calculatedAt: Date): boolean {
-    const oneHourAgo = new Date();
-    oneHourAgo.setHours(oneHourAgo.getHours() - 1);
-    return calculatedAt > oneHourAgo;
-  }
+	private isStatRecent(calculatedAt: Date): boolean {
+		const oneHourAgo = new Date();
+		oneHourAgo.setHours(oneHourAgo.getHours() - 1);
+		return calculatedAt > oneHourAgo;
+	}
 }

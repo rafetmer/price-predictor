@@ -23,35 +23,35 @@ import { PriceHistoryRepository } from './domain/repositories/price-history.repo
 import { PriceStatsRepository } from './domain/repositories/price-stats.repository';
 
 @Module({
-  imports: [ScheduleModule.forRoot(), EventEmitterModule.forRoot()],
-  controllers: [PricesController, StatsController],
-  providers: [
-    // Prisma Client
-    {
-      provide: PrismaClient,
-      useValue: new PrismaClient(),
-    },
+	imports: [ScheduleModule.forRoot(), EventEmitterModule.forRoot()],
+	controllers: [PricesController, StatsController],
+	providers: [
+		// Prisma Client
+		{
+			provide: PrismaClient,
+			useValue: new PrismaClient(),
+		},
 
-    // Domain Services
-    StatsCalculatorService,
+		// Domain Services
+		StatsCalculatorService,
 
-    // Repositories (using concrete implementations)
-    {
-      provide: 'PriceHistoryRepository',
-      useClass: PrismaPriceHistoryRepository,
-    },
-    {
-      provide: 'PriceStatsRepository',
-      useClass: PrismaPriceStatsRepository,
-    },
+		// Repositories (using concrete implementations)
+		{
+			provide: 'PriceHistoryRepository',
+			useClass: PrismaPriceHistoryRepository,
+		},
+		{
+			provide: 'PriceStatsRepository',
+			useClass: PrismaPriceStatsRepository,
+		},
 
-    // Use Cases
-    SavePriceUseCase,
-    CalculateStatsUseCase,
+		// Use Cases
+		SavePriceUseCase,
+		CalculateStatsUseCase,
 
-    // Infrastructure
-    CoingeckoClient,
-    PriceFetchScheduler,
-  ],
+		// Infrastructure
+		CoingeckoClient,
+		PriceFetchScheduler,
+	],
 })
 export class AppModule {}

@@ -8,23 +8,23 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()
 export class SavePriceUseCase {
-  constructor(
-    @Inject('PriceHistoryRepository')
-    private readonly priceHistoryRepository: PriceHistoryRepository,
-    private readonly eventEmitter: EventEmitter2,
-  ) {}
+	constructor(
+		@Inject('PriceHistoryRepository')
+		private readonly priceHistoryRepository: PriceHistoryRepository,
+		private readonly eventEmitter: EventEmitter2,
+	) {}
 
-  async execute(symbol: string, price: number): Promise<PriceHistory> {
-    const symbolVO = new Symbol(symbol);
-    const priceVO = new Price(price);
+	async execute(symbol: string, price: number): Promise<PriceHistory> {
+		const symbolVO = new Symbol(symbol);
+		const priceVO = new Price(price);
 
-    const priceHistory = new PriceHistory(symbolVO, priceVO);
+		const priceHistory = new PriceHistory(symbolVO, priceVO);
 
-    const savedPrice = await this.priceHistoryRepository.save(priceHistory);
+		const savedPrice = await this.priceHistoryRepository.save(priceHistory);
 
-    // Fiyat kaydedildiğinde bir event fırlat
-    this.eventEmitter.emit('price.saved', new PriceSavedEvent(savedPrice));
+		// Fiyat kaydedildiğinde bir event fırlat
+		this.eventEmitter.emit('price.saved', new PriceSavedEvent(savedPrice));
 
-    return savedPrice;
-  }
+		return savedPrice;
+	}
 }

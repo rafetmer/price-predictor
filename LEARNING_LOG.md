@@ -59,15 +59,15 @@ Elbette `throw new Error('Geçersiz sembol');` de diyebilirdik. Ancak özel bir 
 
     ```typescript
     try {
-      // ... bir işlem yap ...
+    	// ... bir işlem yap ...
     } catch (error) {
-      if (error instanceof InvalidSymbolException) {
-        // Kullanıcıya 400 Bad Request hatası dön ve "Lütfen geçerli bir sembol girin" de.
-      } else if (error instanceof DatabaseConnectionException) {
-        // Kullanıcıya 500 Internal Server Error hatası dön ve "Sistemde bir sorun oluştu" de.
-      } else {
-        // Bilinmeyen bir hata, logla.
-      }
+    	if (error instanceof InvalidSymbolException) {
+    		// Kullanıcıya 400 Bad Request hatası dön ve "Lütfen geçerli bir sembol girin" de.
+    	} else if (error instanceof DatabaseConnectionException) {
+    		// Kullanıcıya 500 Internal Server Error hatası dön ve "Sistemde bir sorun oluştu" de.
+    	} else {
+    		// Bilinmeyen bir hata, logla.
+    	}
     }
     ```
 

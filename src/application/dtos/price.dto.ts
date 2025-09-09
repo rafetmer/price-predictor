@@ -1,4 +1,4 @@
 export class PriceDto {
-  symbol: string;
-  price: number;
+	symbol: string;
+	price: number;
 }

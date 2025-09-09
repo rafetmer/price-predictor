@@ -8,51 +8,51 @@ import { PriceStats } from '../../domain/entities/price-stats.entity';
 
 @Injectable()
 export class CalculateStatsUseCase {
-  constructor(
-    @Inject('PriceHistoryRepository')
-    private readonly priceHistoryRepository: PriceHistoryRepository,
-    @Inject('PriceStatsRepository')
-    private readonly priceStatsRepository: PriceStatsRepository,
-    private readonly statsCalculator: StatsCalculatorService,
-  ) {}
+	constructor(
+		@Inject('PriceHistoryRepository')
+		private readonly priceHistoryRepository: PriceHistoryRepository,
+		@Inject('PriceStatsRepository')
+		private readonly priceStatsRepository: PriceStatsRepository,
+		private readonly statsCalculator: StatsCalculatorService,
+	) {}
 
-  async execute(symbol: string, period: string): Promise<PriceStats> {
-    const symbolVO = new Symbol(symbol);
-    const periodVO = new Period(period);
+	async execute(symbol: string, period: string): Promise<PriceStats> {
+		const symbolVO = new Symbol(symbol);
+		const periodVO = new Period(period);
 
-    const endDate = new Date();
-    const startDate = this.getStartDate(endDate, periodVO);
+		const endDate = new Date();
+		const startDate = this.getStartDate(endDate, periodVO);
 
-    const priceHistories =
-      await this.priceHistoryRepository.findBySymbolAndTimeRange(
-        symbolVO,
-        startDate,
-        endDate,
-      );
+		const priceHistories =
+			await this.priceHistoryRepository.findBySymbolAndTimeRange(
+				symbolVO,
+				startDate,
+				endDate,
+			);
 
-    if (priceHistories.length === 0) {
-      throw new Error('Bu periyot için yeterli veri bulunamadı.');
-    }
+		if (priceHistories.length === 0) {
+			throw new Error('Bu periyot için yeterli veri bulunamadı.');
+		}
 
-    const newStats = this.statsCalculator.calculateStats(
-      priceHistories,
-      symbolVO,
-      periodVO,
-    );
+		const newStats = this.statsCalculator.calculateStats(
+			priceHistories,
+			symbolVO,
+			periodVO,
+		);
 
-    return this.priceStatsRepository.save(newStats);
-  }
+		return this.priceStatsRepository.save(newStats);
+	}
 
-  private getStartDate(endDate: Date, period: Period): Date {
-    const date = new Date(endDate);
-    const periodValue = period.getValue();
-    if (periodValue === '1d') {
-      date.setDate(date.getDate() - 1);
-    } else if (periodValue === '7d') {
-      date.setDate(date.getDate() - 7);
-    } else if (periodValue === '30d') {
-      date.setDate(date.getDate() - 30);
-    }
-    return date;
-  }
+	private getStartDate(endDate: Date, period: Period): Date {
+		const date = new Date(endDate);
+		const periodValue = period.getValue();
+		if (periodValue === '1d') {
+			date.setDate(date.getDate() - 1);
+		} else if (periodValue === '7d') {
+			date.setDate(date.getDate() - 7);
+		} else if (periodValue === '30d') {
+			date.setDate(date.getDate() - 30);
+		}
+		return date;
+	}
 }
