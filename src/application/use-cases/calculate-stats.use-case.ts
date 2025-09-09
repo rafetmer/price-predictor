@@ -1,13 +1,17 @@
-import { PriceHistoryRepository } from '../../domain/repositories/price-history.repository';
-import { PriceStatsRepository } from '../../domain/repositories/price-stats.repository';
+import { Inject, Injectable } from '@nestjs/common';
+import type { PriceHistoryRepository } from '../../domain/repositories/price-history.repository';
+import type { PriceStatsRepository } from '../../domain/repositories/price-stats.repository';
 import { StatsCalculatorService } from '../../domain/services/stats-calculator.service';
 import { Symbol } from '../../domain/value-objects/symbol.value-object';
 import { Period } from '../../domain/value-objects/period.value-object';
 import { PriceStats } from '../../domain/entities/price-stats.entity';
 
+@Injectable()
 export class CalculateStatsUseCase {
   constructor(
+    @Inject('PriceHistoryRepository')
     private readonly priceHistoryRepository: PriceHistoryRepository,
+    @Inject('PriceStatsRepository')
     private readonly priceStatsRepository: PriceStatsRepository,
     private readonly statsCalculator: StatsCalculatorService,
   ) {}

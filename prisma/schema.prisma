@@ -6,10 +6,37 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../generated/prisma"
 }
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+// PriceHistory modeli, her bir sembol için zaman içindeki fiyat kayıtlarını tutar.
+// Bu, projenin ham veri kaynağıdır ve tüm istatistiksel analizler bu veriye dayanır.
+model PriceHistory {
+  id        Int      @id @default(autoincrement())
+  symbol    String   @db.VarChar(30)
+  price     Float
+  timestamp DateTime @default(now())
+
+  // Sorgu performansını artırmak için sembol ve zaman damgası üzerinde birleşik bir indeks oluşturulur.
+  @@index([symbol, timestamp])
+}
+
+// PriceStats modeli, belirli bir periyot için hesaplanmış fiyat istatistiklerini saklar.
+// Bu, sık istenen verilerin tekrar tekrar hesaplanmasını önleyerek performansı artırır.
+model PriceStats {
+  id           Int      @id @default(autoincrement())
+  symbol       String   @db.VarChar(30)
+  period       String   @db.VarChar(10) // "1d", "7d", "30d" gibi değerler
+  avg          Float
+  volatility   Float
+  trend        String   @db.VarChar(10) // "UP", "DOWN", "STABLE" gibi değerler
+  calculatedAt DateTime @default(now())
+
+  // Bir sembol ve periyot için birden fazla istatistik olabileceğinden,
+  // sorgu performansını artırmak için bu alanlara bir indeks eklenir.
+  @@index([symbol, period])
 }

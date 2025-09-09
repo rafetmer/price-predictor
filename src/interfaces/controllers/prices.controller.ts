@@ -1,4 +1,4 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, Inject, Param } from '@nestjs/common';
 import type { PriceHistoryRepository } from '../../domain/repositories/price-history.repository';
 import { PriceHistory } from '../../domain/entities/price-history.entity';
 import { Symbol } from '../../domain/value-objects/symbol.value-object';
@@ -6,6 +6,7 @@ import { Symbol } from '../../domain/value-objects/symbol.value-object';
 @Controller('prices')
 export class PricesController {
   constructor(
+    @Inject('PriceHistoryRepository')
     private readonly priceHistoryRepository: PriceHistoryRepository,
   ) {}
 

@@ -70,15 +70,15 @@ export class PrismaPriceStatsRepository implements PriceStatsRepository {
     });
 
     return found.map(
-      (s) =>
+      (record) =>
         new PriceStats(
-          new Symbol(s.symbol),
-          new Period(s.period),
-          s.avg,
-          s.volatility,
-          new Trend(s.trend),
-          s.calculatedAt,
-          s.id,
+          new Symbol(record.symbol),
+          new Period(record.period),
+          record.avg,
+          record.volatility,
+          new Trend(record.trend),
+          record.calculatedAt,
+          record.id,
         ),
     );
   }

@@ -4,6 +4,7 @@ import { PriceHistoryRepository } from '../../domain/repositories/price-history.
 import { PriceHistory } from '../../domain/entities/price-history.entity';
 import { Symbol } from '../../domain/value-objects/symbol.value-object';
 import { Price } from '../../domain/value-objects/price.value-object';
+import { nullish } from 'zod';
 
 @Injectable()
 export class PrismaPriceHistoryRepository implements PriceHistoryRepository {
@@ -27,7 +28,10 @@ export class PrismaPriceHistoryRepository implements PriceHistoryRepository {
 
   async findById(id: number): Promise<PriceHistory | null> {
     const found = await this.prisma.priceHistory.findUnique({ where: { id } });
-    if (!found) return null;
+    if (!found) {
+        console.log("PriceHistory not found");
+        return null;
+    } 
     return new PriceHistory(
       new Symbol(found.symbol),
       new Price(found.price),
@@ -42,12 +46,13 @@ export class PrismaPriceHistoryRepository implements PriceHistoryRepository {
       orderBy: { timestamp: 'desc' },
     });
     return found.map(
-      (p) =>
+        // we will map every record to PriceHistory entities
+      (record) =>
         new PriceHistory(
-          new Symbol(p.symbol),
-          new Price(p.price),
-          p.timestamp,
-          p.id,
+          new Symbol(record.symbol),
+          new Price(record.price),
+          record.timestamp,
+          record.id,
         ),
     );
   }
@@ -61,19 +66,19 @@ export class PrismaPriceHistoryRepository implements PriceHistoryRepository {
       where: {
         symbol: symbol.getValue(),
         timestamp: {
-          gte: startDate,
+          gte: startDate, // bunlar prismaya özel terimler gte = greater than or equal lte = less than or equual
           lte: endDate,
         },
       },
       orderBy: { timestamp: 'asc' },
     });
     return found.map(
-      (p) =>
+      (record) =>
         new PriceHistory(
-          new Symbol(p.symbol),
-          new Price(p.price),
-          p.timestamp,
-          p.id,
+          new Symbol(record.symbol),
+          new Price(record.price),
+          record.timestamp,
+          record.id,
         ),
     );
   }

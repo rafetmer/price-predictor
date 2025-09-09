@@ -11,6 +11,8 @@ export class PriceFetchScheduler {
   private readonly trackedAssets = [
     { coinId: 'bitcoin', symbol: 'BTC' },
     { coinId: 'ethereum', symbol: 'ETH' },
+    { coinId: 'ripple', symbol: 'XRP' },
+    { coinId: 'dogecoin', symbol: 'DOGE' },
   ];
   private readonly vsCurrency = 'usd';
 
@@ -19,7 +21,7 @@ export class PriceFetchScheduler {
     private readonly savePriceUseCase: SavePriceUseCase,
   ) {}
 
-  @Cron(CronExpression.EVERY_5_MINUTES) // Her 5 dakikada bir çalışır
+  @Cron(CronExpression.EVERY_5_MINUTES) // Her 10 saniyede bir çalışır
   async handleCron() {
     this.logger.log('Fiyat verileri çekiliyor...');
 

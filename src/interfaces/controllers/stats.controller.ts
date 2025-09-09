@@ -1,4 +1,4 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, Inject, Param } from '@nestjs/common';
 import type { PriceStatsRepository } from '../../domain/repositories/price-stats.repository';
 import { CalculateStatsUseCase } from '../../application/use-cases/calculate-stats.use-case';
 import { PriceStats } from '../../domain/entities/price-stats.entity';
@@ -8,6 +8,7 @@ import { Period } from '../../domain/value-objects/period.value-object';
 @Controller('stats')
 export class StatsController {
   constructor(
+    @Inject('PriceStatsRepository')
     private readonly priceStatsRepository: PriceStatsRepository,
     private readonly calculateStatsUseCase: CalculateStatsUseCase,
   ) {}
